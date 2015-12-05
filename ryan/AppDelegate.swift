@@ -16,9 +16,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
 
-
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
+
+        var flights = [Flight]()
+        
         let fromAirport = "RIX"
         getDestinationAitports(fromAirport, completion: { toAirports in
             for toAirport in toAirports {
@@ -27,12 +29,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let toDate = fromDate.add(100)
 
                 self.getFlights(fromAirport, to:toAirport, startDate: fromDate, endDate: toDate, completion: { flightList in
+                    flights.appendContentsOf(flightList)
                     for flight in flightList {
                         print(flight)
                     }
                 })
             }
         })
+        
+        print(flights)
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {
@@ -71,7 +76,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                 date: flightDate)
                             
                             resultFlights.append(resultFlight)
-                            print(flight)
                             
                         }
                     }
@@ -95,7 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                             let toAirport = subJson["airportTo"].stringValue
                             dest.append(toAirport)
                         }
-                        dest.removeRange(1...dest.count-1)
+                        //dest.removeRange(1...dest.count-1)
                         completion(response: dest)
                     }
                 case .Failure(let error):
